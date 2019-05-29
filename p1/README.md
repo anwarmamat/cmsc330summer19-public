@@ -1,8 +1,8 @@
 # Project 1: WordNet
-Due: June 7 (Late June 8) at 11:59:59 PM
-Points: 35P/35R/30S
 
-## Advice
+Due: June 7 (Late June 8) at 11:59:59 PM
+
+Points: 35P/35R/30S
 
 * Read this entire document twice before writing a single line of code.
 * Don't start programming until you've learned regular expressions.

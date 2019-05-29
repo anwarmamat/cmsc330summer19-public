@@ -1,5 +1,7 @@
 # Project 0: Setup
+
 Due: June 3 (Late June 4) at 11:59:59 PM
+
 Points: 100P/0R/0S
 
 This project is simply to get your system ready.
