@@ -138,9 +138,7 @@ module Minitest
       result_hashes = results.map do |result|
         { :name => result.name,
           :assertions => result.assertions,
-          :klass => result.klass,
-          :failures => result.failures,
-          :source_location => result.source_location
+          :failures => result.failures
         }
       end
 
