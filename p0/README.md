@@ -15,8 +15,8 @@ you will learn three different programming languages:
 Ruby, OCaml, and Rust.
 To complete the projects
 you have to install the appropriate software
-to develop programs in these languages.
-We recommend installing these packages on your local machine.
+to develop programs in these languages
+on your local machine.
 
 Here are the packages you are required to install:
 
@@ -29,13 +29,10 @@ Here are the packages you are required to install:
   - [OPAM](https://opam.ocaml.org)
   - [OUnit](https://opam.ocaml.org/packages/ounit)
   - [dune](https://opam.ocaml.org/packages/dune)
+  - [utop](https://opam.ocaml.org/packages/utop)
 * [Rust](https://www.rust-lang.org)
 * [SQLite3](https://sqlite.org)
-
-We recommend installing the following additional packages:
-
 * [Graphviz](http://graphviz.org)
-* [utop](https://opam.ocaml.org/packages/utop)
 
 The next sections
 will help guide you through installing these
@@ -43,53 +40,27 @@ on different operating systems.
 Read the section relevant to you.
 Some of these steps may take a long time,
 be patient.
+**Read all instructions very carefully.**
 
-These instructions may require slight (or large) modifications
-depending on your setup.
-Search engines are your friend if something goes wrong.
 If you are unable to install **anything**,
 please come to office hours
 **as soon as possible**.
 
 ### macOS
 
-First, we will install the Homebrew package manager.
-
-* `/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"`
-
-Check your Ruby version with `ruby -v`.
-If it's older than 2.2.2
-you'll need to install a newer version
-using `brew install ruby`.
-
-Next, we can install some of the software through Homebrew.
-
-* `brew install git ocaml opam rust graphviz`
-
-macOS already comes with Ruby and the Ruby Gems package manager.
-We only need to install the required gems.
-
-* `sudo gem install sqlite3 sinatra`
-
-If it hangs installing documentation for Sinatra,
-hit Ctrl-C.
-It will have successfully installed anyway.
-
-The OCaml package manager needs some initial configuration.
-
-* `opam init`
-* When prompted to modify `~/.bash_profile` (or another file) type "y".
-* `source ~/.bash_profile` (or the file mentioned above).
-
-Next, we will install the required OCaml packages through OPAM.
-
-* `opam install dune ounit utop`
+1. Install the [Homebrew package manager](https://brew.sh/).
+2. Run `brew install ruby git graphviz`.
+3. Run `sudo gem install minitest sqlite3 sinatra -N` to install the Ruby packages.
+4. Read [this instruction guide](https://github.com/janestreet/install-ocaml)
+   for installing OCaml and OPAM.
+5. Run `opam install -y ounit dune utop`.
+5. Install the [Rust](https://www.rust-lang.org/tools/install) language.
 
 ### Windows 10
 
-Enable the [Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10)
-and install Ubuntu.
-Then follow the instructions in the Linux section below.
+1. Enable the [Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10).
+2. Install Ubuntu from the Microsoft Store.
+3. Follow the instructions in the Linux section.
 
 ### Linux
 
@@ -98,37 +69,12 @@ This includes distributions like Ubuntu.
 If you have a different distribution,
 use the native package manager.
 
-First, we add the OCaml package archive.
-
-* `sudo add-apt-repository ppa:avsm/ppa`
-* `sudo apt-get update`
-
-We install all the packages we need.
-
-* `sudo apt-get install git-all ruby-dev sqlite3 libsqlite3-dev ocaml ocaml-native-compilers camlp4 opam make m4 curl graphviz default-jre`
-
-We will install some gems.
-
-* `sudo gem install sqlite3 sinatra`
-
-If it hangs installing documentation for Sinatra,
-hit Ctrl-C.
-It will have successfully installed anyway.
-
-The OCaml package manager needs some initial configuration.
-
-* `opam init`
-* If it hangs at "Fetching repository information" press Enter. This may take awhile, be patient.
-* When prompted to modify `~/.bash_profile` (or another file) type "y".
-* `source ~/.bash_profile` (or the file mentioned above).
-
-Next, we will install the required OCaml packages through OPAM.
-
-* `opam install dune ounit utop`
-
-Finally, we'll install Rust. Note this may take some time.
-
-* `curl https://sh.rustup.rs -sSf | sh`
+1. Run `sudo apt install ruby-dev git sqlite3 libsqlite3-dev graphviz default-jre`
+2. Run `sudo gem install minitest sqlite3 sinatra -N` to install the Ruby packages.
+3. Read [this instruction guide](https://github.com/janestreet/install-ocaml)
+   for installing OCaml and OPAM.
+4. Run `opam install -y ounit dune utop`.
+5. Install the [Rust](https://www.rust-lang.org/tools/install) language.
 
 ## Testing and Submitting
 
