@@ -1,5 +1,8 @@
 class RubyIdentifier
   def initialize
+
+
+blah
   end
 
   # add : String, String ->
