@@ -1,0 +1,11 @@
+# Submit server .submit file for
+#  Course CMSC330
+#  Project P2B: OCaml Higher Order Functions and Data
+
+courseName=CMSC330
+semester=201905
+projectNumber=P2B
+courseKey=843192fa9007b0c0
+authentication.type=ldap
+baseURL=https://submit.cs.umd.edu:443/summer2019
+submitURL=https://submit.cs.umd.edu:443/summer2019/eclipse/SubmitProjectViaEclipse
