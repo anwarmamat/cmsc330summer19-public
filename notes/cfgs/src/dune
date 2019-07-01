@@ -1,0 +1,4 @@
+(library
+  (name cfgs)
+  (modules lexer parser)
+  (libraries str))
