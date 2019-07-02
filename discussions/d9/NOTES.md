@@ -115,7 +115,7 @@ Lexer.lex "((fun x -> x) y)" =
  Tok_Arrow; Tok_Var "x"; Tok_RParen;
   Tok_Var "y"; Tok_RParen; Tok_EOF]
 
-(Parser.parse (lexer "((fun x -> x) y)")) =
+(Parser.parse (Lexer.lex "((fun x -> x) y)")) =
 App (Fun ("x", Var "x"), Var "y")
 ```
 
