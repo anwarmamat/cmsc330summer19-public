@@ -1,0 +1,4 @@
+(library
+  (name d9)
+  (modules lexer parser)
+  (libraries str))
