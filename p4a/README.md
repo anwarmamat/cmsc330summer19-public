@@ -21,51 +21,37 @@ You can run your lexer or parser directly on a SmallC program by running `dune e
 You can run the tests as usual with `dune runtest -f`. To test from the toplevel with `dune utop src`, import functions with `open Parser` and `open Lexer` at the prompt you get after starting `utop`.
 
 ## Part 1: The Lexer (aka Scanner)
-Before your parser can process input, the raw file must be transformed into logical units called tokens. You will need to implement the function `tokenize : string -> token list` which takes as input the program as a string and outputs the associated token list. The `token` type is implemented in [`tokenTypes.ml`][token types], and is defined as follows:
-```
-type token =
-  | Tok_For
-  | Tok_From
-  | Tok_To
-  | Tok_While
-  | Tok_Int_Type
-  | Tok_Bool_Type
-  | Tok_Sub
-  | Tok_Semi
-  | Tok_RParen
-  | Tok_RBrace
-  | Tok_Print
-  | Tok_Pow
-  | Tok_Add
-  | Tok_Or
-  | Tok_NotEqual
-  | Tok_Not
-  | Tok_Mult
-  | Tok_Main
-  | Tok_LessEqual
-  | Tok_Less
-  | Tok_LParen
-  | Tok_LBrace
-  | Tok_Int of int
-  | Tok_If
-  | Tok_ID of string
-  | Tok_GreaterEqual
-  | Tok_Greater
-  | Tok_Equal
-  | Tok_Else
-  | Tok_Div
-  | Tok_Bool of bool
-  | Tok_Assign
-  | Tok_And
-  | EOF
-```
-As an **example**: If your lexer function was called as `tokenize "(2    + x)* 4"` then it should produce the following output:
-```
-[Tok_LParen; Tok_Int(2); Tok_Add; Tok_ID("x"); Tok_RParen; Tok_Mult; Tok_Int(4); EOF]
-```
-Most tokens are mapping from exactly one symbol, as follows:
 
-Token Name (in OCaml) | Lexical Representation
+Before your parser can process input, the raw file must be transformed into logical units called tokens. This process is readily handled by use of regular expressions. Information about OCaml's regular expressions library can be found in the [`Str` module documentation][str doc]. You aren't required to use it, but you may find it very helpful. Note that a lexer is the same as a scanner, which is discussed in the lecture slides.
+
+Your lexer must be written in `lexer.ml`. You will need to implement the function `tokenize : string -> token list` which takes as input the program as a string and outputs the associated token list. The `token` type is implemented in [`smallCTypes.ml`](./smallCTypes.ml).
+
+Your lexer must meet these general requirements:
+- Tokens can be separated by arbitrary amounts of whitespace, which your lexer should discard. Spaces, tabs ('\t') and newlines ('\n') are all considered whitespace.
+- The lexer should be case sensitive.
+- Lexer input should be terminated by the `EOF` token, meaning that the shortest possible output from the lexer is `[EOF]`.
+- If the beginning of a string could be multiple things, the longest match should be preferred, for example:
+  - "while0" should not be lexed as `Tok_While`, but as `Tok_ID("while0")`, since it is an identifier
+- The version of the for loop used in this project is different from the normal version you see in the C language.
+
+Most tokens only exist in one form (for example, the only way for `Tok_Pow` to appear in the program is as `^` and the only way for `Tok_While` to appear in the program is as `while`). However, a few tokens have more complex rules. The regular expressions for these more complex rules are provided here:
+
+- `Tok_Bool of bool`: The value will be set to `true` on the input string "true" and `false` on the input string "false".
+  - *Regular Expression*: `true|false`
+- `Tok_Int of int`: Valid ints may be positive or negative and consist of 1 or more digits. You may find the function `int_of_string` useful in lexing this token type.
+  - *Regular Expression*: `-?[0-9]+`
+- `Tok_ID of string`: Valid IDs must start with a letter and can be followed by any number of letters or numbers. Note that keywords may be contained within IDs and they should be counted as IDs unless they perfectly match a keyword!
+  - *Regular Expression*: `[a-zA-Z][a-zA-Z0-9]*`
+  - *Valid examples*:
+    - "a"
+    - "ABC"
+    - "a1b2c3DEF6"
+    - "while1"
+    - "ifelsewhile"
+
+In grammars given later in this project description, we use the lexical representation of tokens instead of the token name; e.g. we write `(` instead of `Tok_LParen`. This table shows all mappings of tokens to their lexical representations, save for the three variant tokens specified above:
+
+Token Name (in OCaml) | Lexical Representation (in grammars below)
 --- | ---
 `Tok_LParen` | `(`
 `Tok_RParen` | `)`
@@ -98,40 +84,13 @@ Token Name (in OCaml) | Lexical Representation
 `Tok_Div` | `/`
 `Tok_Pow` | `^`
 
-The remaining tokens are not determined by a single match, but rather via a regular expression. In particular:
-
-- `Tok_Bool of bool`: The value will be set to `true` on the input string "true" and `false` on the input string "false".
-  - *Regular Expression*: `true|false`
-- `Tok_Int of int`: Valid ints may be positive or negative and consist of 1 or more digits. You may find the function `int_of_string` useful in lexing this token type.
-  - *Regular Expression*: `-?[0-9]+`
-- `Tok_ID of string`: Valid IDs must start with a letter and can be followed by any number of letters or numbers. Note that keywords may be contained within IDs and they should be counted as IDs unless they perfectly match a keyword!
-  - *Regular Expression*: `[a-zA-Z][a-zA-Z0-9]*`
-  - *Valid examples*:
-    - "a"
-    - "ABC"
-    - "a1b2c3DEF6"
-    - "while1"
-    - "ifelsewhile"
-    - "forfromifelse2"
-
-We have provided a fair bit of code to get your started, in `lexer.ml` -- your implementation should go in `lexer.ml`. The scanning process is readily handled via regular expressions, using OCaml's regular expressions library [`Str` module documentation][str doc].
-
-A couple of things to note:
-- The lexer emits the `EOF` token at the end of the input, meaning that the shortest possible output from the lexer is `[EOF]`.
-- Tokens can be separated by arbitrary amounts of whitespace; the lexer discards it. Spaces, tabs ('\t') and newlines ('\n') are all considered whitespace.
-- The starter lexer does not currently handle keywords, like `while` or `for`; these will be (incorrectly) returned as `Tok_ID("while")` or `Tok_ID("for")`. You will need to fix this. When doing so, keep this rule in mind:  If the beginning of a string could be multiple things, the longest match should be preferred, for example:
-  - "while0" should not be lexed as `Tok_While`, but as `Tok_ID("while0")`, since it is an identifier
-- The starter lexer matches operators using the `op_match` function; some operators you will need to fill in, still.
-- The version of the for loop used in this project is different from the normal version you see in the C language.
-
-Note that in grammars given later in this project description, we use the lexical representation of tokens instead of the OCaml token name; e.g. we write `(` instead of `Tok_LParen`. This is to save space.
-
 Your lexing code will feed the tokens into your parser, so a broken lexer will render the parser useless. Test your lexer thoroughly before moving on to the parser!
 
-## The Parser
+## Part 2: The Parser
+
 Once the program has been transformed from a string of raw characters into more manageable tokens, you're ready to parse. The parser must be implemented in `parser.ml` in accordance with the signatures for `parse_expr`, `parse_stmt` and `parse_main` found in `parser.mli`. `parser.ml` is the only file you will write code in. The functions should be left in the order they are provided, as a good implementation will rely heavily on earlier functions.
 
-We provide an **ambiguous** CFG below for the language that must be converted so that it's right-recursive and right-associative. That way it can be parsed by a recursive descent parser. (By right associative, we are referring to binary infix operators—so something like `1 + 2 + 3` will parse as `Add(Int(1), Add(Int(2), Int(3)))`, essentially implying parentheses in the form `(1 + (2 + 3))`.) As convention, in the given CFG all non-terminals are capitalized, all syntax literals (terminals) are formatted `as non-italicized code` and will come in to the parser as tokens from your lexer. Variant token types (i.e. `Tok_Bool`, `Tok_Int`, and `Tok_ID`) will be printed *`as italicized code`*.
+We provide an **ambiguous** CFG below for the language that must be converted so that it's right-recursive and right-associative. That way it can be parsed by a recursive descent parser. (By right associative, we are referring to binary infix operators—so something like `1 + 2 + 3` will parse as `Add (Int 1, Add (Int 2, Int 3))`, essentially implying parentheses in the form `(1 + (2 + 3))`.) As convention, in the given CFG all non-terminals are capitalized, all syntax literals (terminals) are formatted `as non-italicized code` and will come in to the parser as tokens from your lexer. Variant token types (i.e. `Tok_Bool`, `Tok_Int`, and `Tok_ID`) will be printed *`as italicized code`*.
 
 ### `parse_expr`
 Expressions are a self-contained subset of the SmallC grammar. As such, implementing them first will allow us to build the rest of the language on top of them later.
@@ -240,12 +199,12 @@ Seq(Declare(Int_Type, "x"),
 Seq(Assign("x",
   Add(
     Mult(
-      Int(2),
+      Int 2,
       Pow(
-        Int(3),
-        Int(5))),
-    Int(4))),
-Seq(Print(Greater(ID("x"), Int(100))), NoOp)))
+        Int 3,
+        Int 5)),
+    Int 4)),
+Seq(Print(Greater(ID "x", Int 100)), NoOp)))
 ```
 
 **Input:**
@@ -262,7 +221,7 @@ int main(){
 ```
 (Seq
   (Declare (Int_Type, "a"),
-   Seq (For ("a", (Int 1), (Int 10), Seq (Print (ID "a"), NoOp)),
+   Seq (For ("a", Int 1, Int 10, Seq (Print (ID "a"), NoOp)),
         NoOp)))
 ```
 
