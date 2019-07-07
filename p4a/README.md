@@ -88,7 +88,7 @@ Your lexing code will feed the tokens into your parser, so a broken lexer will r
 
 ## Part 2: The Parser
 
-Once the program has been transformed from a string of raw characters into more manageable tokens, you're ready to parse. The parser must be implemented in `parser.ml` in accordance with the signatures for `parse_expr`, `parse_stmt` and `parse_main` found in `parser.mli`. `parser.ml` is the only file you will write code in. The functions should be left in the order they are provided, as a good implementation will rely heavily on earlier functions.
+Once the program has been transformed from a string of raw characters into more manageable tokens, you're ready to parse. The parser must be implemented in `parser.ml` in accordance with the signature for `parse_main` found in `parser.mli`. `parser.ml` is the only file you will write code in. The functions should be left in the order they are provided, as a good implementation will rely heavily on earlier functions.
 
 We provide an **ambiguous** CFG below for the language that must be converted so that it's right-recursive and right-associative. That way it can be parsed by a recursive descent parser. (By right associative, we are referring to binary infix operators—so something like `1 + 2 + 3` will parse as `Add (Int 1, Add (Int 2, Int 3))`, essentially implying parentheses in the form `(1 + (2 + 3))`.) As convention, in the given CFG all non-terminals are capitalized, all syntax literals (terminals) are formatted `as non-italicized code` and will come in to the parser as tokens from your lexer. Variant token types (i.e. `Tok_Bool`, `Tok_Int`, and `Tok_ID`) will be printed *`as italicized code`*.
 
@@ -114,7 +114,6 @@ type expr =
   | And of expr * expr
   | Not of expr
 ```
-The function `parse_expr : token list -> token list * expr` takes a list of tokens and returns a tuple of the remaining tokens and the `expr` that was parsed. Examples in class used a more imperative style with a global reference, but the `parse_expr` and `parse_stmt` functions in this project use a purely functional style where remaining tokens are returned along with the produced AST types. How you choose to use this part of the return value is up to you, but it must satisfy the same property of finally returning all remaining tokens regardless of your design decisions around it.
 
 The (ambiguous) CFG of expressions, from which you should produce a value of `expr` AST type, is as follows:
 
@@ -168,9 +167,7 @@ type stmt =
   | Print of expr
 ```
 
-The function `parse_stmt : token list -> token list * stmt` takes a token list as input and returns a tuple of the tokens remaining and the `stmt` that was parsed from the consumed input tokens. The `stmt` type isn't self contained like the `expr` type, and instead refers both to itself and to `expr`; use your `parse_expr` function to avoid duplicate code!
-
-Again, we provide a grammar that is ambiguous and must be adjusted to be parsable by your recursive descent parser:
+The `stmt` type isn't self contained like the `expr` type, and instead refers both to itself and to `expr`; use your `parse_expr` function to avoid duplicate code! Again, we provide a grammar that is ambiguous and must be adjusted to be parsable by your recursive descent parser:
 
 - Stmt -> Stmt Stmt | DeclareStmt | AssignStmt | PrintStmt | IfStmt | ForStmt | WhileStmt
   - DeclareStmt -> BasicType ID `;`
@@ -182,9 +179,7 @@ Again, we provide a grammar that is ambiguous and must be adjusted to be parsabl
   - ForStmt -> `for` `(` ID `from` Expr `to` Expr `)` `{` Stmt `}`
   - WhileStmt -> `while` `(` Expr `)` `{` Stmt `}`
 
-As with the Expression grammar, the transformation to enable the grammar to be parsable can be found in the [addendum][ambiguity].
-
-If we expand on our previous example, we can see how the expression parser integrates directly into the statement parser:
+As with the expression grammar, the transformation to enable the grammar to be parsable can be found in the [addendum][ambiguity]. If we expand on our previous example, we can see how the expression parser integrates directly into the statement parser:
 
 **Input:**
 ```
@@ -226,6 +221,7 @@ int main(){
 ```
 
 ### `parse_main`
+
 The last and shortest step is to have your parser handle the function entry point. This is where `parse_main : token list -> stmt` comes in. This function behaves the exact same way as `parse_stmt`, except for two key semantic details:
 - `parse_main` will parse the function declaration for main, not just the body.
 - `parse_main` validates that a successful parse terminates in `EOF`. A parse not ending in `EOF` should raise an `InvalidInputException` in `parse_main`. As such, `parse_main` does NOT return remaining tokens, since it validates ensures that the token list is emptied by the parse.
