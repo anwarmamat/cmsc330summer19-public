@@ -1,0 +1,3 @@
+(executable
+  (name repl)
+  (libraries str d9 d10))
