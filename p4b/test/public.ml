@@ -125,7 +125,8 @@ let test_exp_3 = create_system_test [] [("a", Int_Val (-1))] ["public"; "exp3.c"
 let test_ifelse = create_system_test [] [("a", Int_Val 200)] ["public"; "ifelse.c"]
 let test_if_else_while = create_system_test [] [("b", Int_Val 0);("a", Int_Val 200)] ["public"; "if-else-while.c"]
 let test_while = create_system_test [] [("a", Int_Val 10); ("b", Int_Val 11)] ["public"; "while.c"]
-    ~output:"1\n3\n5\n7\n9\n"
+                   ~output:"1\n3\n5\n7\n9\n"
+let test_for = create_system_test [] [("a", Int_Val 51); ("b", Int_Val 41)] ["public"; "for.c"]
 let test_nested_ifelse = create_system_test [] [("a", Int_Val 400)] ["public"; "nested-ifelse.c"]
 let test_nested_while = create_system_test [] [("sum", Int_Val 405);("j", Int_Val 10); ("i", Int_Val 10)] ["public"; "nested-while.c"]
 
@@ -192,6 +193,7 @@ let public =
     "ifelse" >:: test_ifelse;
     "if_else_while" >:: test_if_else_while;
     "while" >:: test_while;
+    "for" >:: test_for;
     "nested_ifelse" >:: test_nested_ifelse;
     "nested_while" >:: test_nested_while;
     "main" >:: test_main;
