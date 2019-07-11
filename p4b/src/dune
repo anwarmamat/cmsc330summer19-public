@@ -1,4 +1,4 @@
 (library
   (name p4b)
   (modules eval evalUtils)
-  (libraries p4a str))
+  (libraries str p4a))
