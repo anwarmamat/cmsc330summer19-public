@@ -16,8 +16,6 @@ Also, you may not use any external crates for your implementation.
 
 Introduction
 ------------
-Tony Stark, a genius and master engineer who received his education at MIT, is best known under the alias Iron Man.  Stark built the Iron Man suit for his protection and went on to run his father's company, where he continues to improve his super suit.
-
 You have been hired to work for Stark Industries!
 
 Recently, Stark has been feeling skeptical of his suit's software.  Fearing for his safety, he decides to rewrite his code from C to Rust.  Rust is a type-safe language with no garbage collector where the developer does not have to worry about managing memory.  The proper amount of memory is promised to be allocated for you and objects are also deallocated for you too.  Typically unmanaged code has performance gains but is vulnerable to security risks such as buffer overflows where attackers can steal data or modify memory, as would happen in C if the code isn't managed properly.  However, in Rust, we can write fast/efficient unmanaged code AND be memory safe!
@@ -33,20 +31,11 @@ Project Files
     * __src/communicator.rs__: This file contains the functions you must implement for part 4.
     * __tests/public.rs__: These are the public tests.  Feel free to write your own.
 * Submission Scripts and Other Files
-    * __submit.rb__: Execute this script to submit your project to the submit server.
     * __submit.jar and .submit__: These files are used by the ruby file above, do not worry about them.
 
 Compilation and Tests
 ---------------------
 In order to compile the project, simply run `cargo build`. To test, run `cargo test` in the root directory of the project. The tests won't run if any part of the project does not compile.
-
-Installing Rust and Cargo
--------------------------
-If you are working in grace, run `module avail rust` every time you log in.
-
-If you are working in a linux environment (that includes C9, Mac, and Bash for Windows 10), just run `curl https://sh.rustup.rs -sSf | sh` in the terminal.
-
-If you are working in Windows and CMD, then go to `https://www.rust-lang.org/en-US/install.html` and download `rustup-init.exe` and run it from CMD.
 
 Part 1: Basic Warmups
 ---------------------
