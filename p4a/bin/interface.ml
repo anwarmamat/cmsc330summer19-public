@@ -6,8 +6,6 @@ let print_usage () =
   print_string "\tdune exec bin/interface.bc <mode> <filename>: Run your parser and lexer on standard input, or a file if one is provided.\n";
   print_string "Modes:\n";
   print_string "\tlex: Run in lex mode to show the tokens output by your lexer\n";
-  print_string "\tparse_expr: Parse an expression using parse_expr\n";
-  print_string "\tparse_stmt: Parse a statement using parse_stmt\n";
   print_string "\tparse: Parse a full program, including the function header, using parse_main\n\n";
 ;;
 
@@ -20,14 +18,6 @@ let toks = tokenize_from_channel ch;;
 match Sys.argv.(1) with
 | "lex" ->
   print_string @@ string_of_list ~newline:true string_of_token toks
-| "parse_expr" ->
-  let (remaining, e) = P4a.Parser.parse_expr toks in
-  print_string @@ string_of_expr e;
-  print_string ("\nRemaining tokens: " ^ (string_of_list ~newline:true string_of_token remaining))
-| "parse_stmt" ->
-  let (remaining, e) = P4a.Parser.parse_stmt toks in
-  print_string @@ string_of_stmt e;
-  print_string ("\nRemaining tokens: " ^ (string_of_list ~newline:true string_of_token remaining))
 | "parse" ->
   print_string @@ string_of_stmt @@ P4a.Parser.parse_main toks;
   print_newline ()
